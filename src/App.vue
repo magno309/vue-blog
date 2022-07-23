@@ -1,27 +1,67 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Blog</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <router-link class="nav-link active" to="/">Home</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/Feed">Feed</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/register" v-if="!isLoggedIn"
+            >Registrar</router-link
+          >
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/sign-in" v-if="!isLoggedIn"
+            >Iniciar sesión</router-link
+          >
+        </li>
+        <li class="nav-item">
+          <button
+            class="btn btn-secondary"
+            type="submit"
+            @click="handleLogOut"
+            v-if="isLoggedIn"
+          >
+            Cerrar sesión
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <router-view />
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import HelloWorld from './components/HelloWorld.vue';
+import { Vue } from "vue-class-component";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import router from "./router";
 
-@Options({
-  components: {
-    HelloWorld,
-  },
-})
-export default class App extends Vue {}
+export default class App extends Vue {
+  isLoggedIn = false;
+  auth = getAuth();
+
+  handleLogOut() {
+    console.log("Cerrar sesión");
+    signOut(this.auth).then(() => {
+      router.push("/");
+    });
+  }
+
+  mounted() {
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.isLoggedIn = true;
+      } else {
+        this.isLoggedIn = false;
+      }
+    });
+  }
+}
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
