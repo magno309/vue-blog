@@ -3,6 +3,9 @@
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Blog</a>
       <ul class="navbar-nav ms-auto">
+        <li class="nav-item nav-link active">
+          Bienvenido {{ auth.currentUser?.email }} !
+        </li>
         <li class="nav-item">
           <router-link class="nav-link active" to="/">Home</router-link>
         </li>
